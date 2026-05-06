@@ -41,7 +41,7 @@ def simulate_three_point_strategy():
     time_left  = STARTING_TIME
     points_scored = 0   # Track our points
  
-    # --- Step 1: Attempt a 3-pointer ---
+    # --- Step 1: Attempt 
     time_left -= TIME_3PT_ATTEMPT
     if random.random() < MY_3PT_PERCENT:
         score_diff += 3     # Tie game!
@@ -61,4 +61,3 @@ def simulate_three_point_strategy():
         # If we missed everything, we lose
         won = score_diff >= 0  # Only wins if somehow tied (extremely rare path)
         return (won, points_scored)
- 
