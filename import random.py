@@ -26,7 +26,7 @@ TIME_REBOUND_PLAY   = 4        # Time after grabbing an offensive rebound
 
 # Keep the "Big Picture" logic separate from the "Tiny Detail" logic.
 def shoot_free_throw():
-    """Simulate shooting a free throw and return True if made, False if missed."""
+    """Simulate shooting a free throw and return True if made, False if missed.""" #Docstring to explain the function's purpose
     return random.random() < OPP_FT_PERCENT
 # This is our helper to simulate free throws, which we will use in both strategies
 
@@ -153,3 +153,32 @@ def simulate_two_point_strategy():
                     return (True, points_scored)
         return (False, points_scored)
     
+# RUN THE SIMULATION
+# =============================================================================
+def run_simulation(num_trials):
+    """
+    Runs both strategies over many trials.
+    Returns a dictionary of results.
+    """
+    results = {
+        "three_pt": {"wins": 0, "losses": 0, "total_points": 0},
+        "two_pt":   {"wins": 0, "losses": 0, "total_points": 0},
+    }
+ 
+    for _ in range(num_trials):
+        # Run both strategies independently each trial
+        won_3pt, points_3pt = simulate_three_point_strategy()
+        if won_3pt:
+            results["three_pt"]["wins"] += 1
+        else:
+            results["three_pt"]["losses"] += 1
+        results["three_pt"]["total_points"] += points_3pt
+ 
+        won_2pt, points_2pt = simulate_two_point_strategy()
+        if won_2pt:
+            results["two_pt"]["wins"] += 1
+        else:
+            results["two_pt"]["losses"] += 1
+        results["two_pt"]["total_points"] += points_2pt
+ 
+    return results
