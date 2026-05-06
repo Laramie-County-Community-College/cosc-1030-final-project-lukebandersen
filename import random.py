@@ -28,7 +28,7 @@ TIME_REBOUND_PLAY   = 4        # Time after grabbing an offensive rebound
 def shoot_free_throw():
     """Simulate shooting a free throw and return True if made, False if missed."""
     return random.random() < OPP_FT_PERCENT
-# this is our helper to simulate free throws, which we will use in both strategies
+# This is our helper to simulate free throws, which we will use in both strategies
 
 # STRATEGY A: Take a 3-pointer
 
@@ -61,3 +61,73 @@ def simulate_three_point_strategy():
         # If we missed everything, we lose
         won = score_diff >= 0  # Only wins if somehow tied (extremely rare path)
         return (won, points_scored)
+
+
+# STRATEGY B: Take a 2 and foul (the "hack-a-opponent" strategy)
+
+def simulate_two_point_strategy():
+    """
+    Simulate one game trial using the 2-point + foul strategy.
+    Returns a tuple: (won: bool, points_scored: int)
+    """
+    score_diff = -3    # We start down 3
+    time_left  = STARTING_TIME
+    points_scored = 0  # Track our points
+ 
+    # -------------------------------------------------------------------------
+    # PHASE 1: Attempt the quick 2-pointer
+    
+    time_left -= TIME_2PT_ATTEMPT
+    if random.random() < MY_2PT_PERCENT:
+        score_diff += 2   # Now down 1
+        points_scored += 2
+ 
+    # If we're still down and out of time, no point continuing
+    if time_left <= 0:
+        return (score_diff >= 0, points_scored)
+ 
+    # -------------------------------------------------------------------------
+    # PHASE 2: Foul the opponent immediately after scoring/missing
+    
+    while time_left > 0 and score_diff < 0:
+        # The opponent gets free throws. We keep fouling until time runs out
+        # or we tie/lead.
+ 
+        # Opponent gets the ball, we foul quickly
+        time_left -= TIME_INBOUND
+        if time_left <= 0:
+            break
+ 
+        # Opponent shoots 2 free throws
+        time_left -= TIME_FT_SEQUENCE
+        ft1 = shoot_free_throw()
+        ft2 = shoot_free_throw()
+ 
+        if ft1:
+            score_diff -= 1
+        if ft2:
+            score_diff -= 1
+ 
+        # Did they miss one? Chance for an offensive rebound (rare — it's a FT)
+        # In real basketball, only the 2nd FT can be rebounded
+        if not ft2:
+            if random.random() < OFFREB_PERCENT and time_left > TIME_REBOUND_PLAY:
+                # We grab the rebound and attempt a shot
+                time_left -= TIME_REBOUND_PLAY
+                if random.random() < MY_2PT_PERCENT:
+                    score_diff += 2
+                    points_scored += 2
+                elif random.random() < MY_3PT_PERCENT * 0.5:  # Desperation 3
+                    score_diff += 3
+                    points_scored += 3
+ 
+        # Do we now have the ball back to attempt another foul cycle?
+        # In real strategy, we'd immediately foul again after inbound.
+        # The loop continues as long as time allows.
+        if time_left <= 0:
+            break
+ 
+        # If we're tied or ahead, we're done — hold the ball or game is over
+        if score_diff >= 0:
+            break
+ 
