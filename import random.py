@@ -131,3 +131,25 @@ def simulate_two_point_strategy():
         if score_diff >= 0:
             break
  
+    # -------------------------------------------------------------------------
+    # PHASE 3: If time ran out or we have a final possession
+    # If we are tied, go to overtime (OT)
+    
+    if score_diff == 0:
+        won = random.random() < OT_WIN_PERCENT
+        return (won, points_scored)
+    elif score_diff > 0:
+        return (True, points_scored)   # We're winning!
+    else:
+        # Down at end — one last desperation 3 if we have any time
+        if time_left > 2:
+            if random.random() < MY_3PT_PERCENT * 0.6:  # Rushed, lower %
+                score_diff += 3
+                points_scored += 3
+                if score_diff == 0:
+                    won = random.random() < OT_WIN_PERCENT
+                    return (won, points_scored)
+                elif score_diff > 0:
+                    return (True, points_scored)
+        return (False, points_scored)
+    
