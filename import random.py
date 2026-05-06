@@ -29,3 +29,36 @@ def shoot_free_throw():
     """Simulate shooting a free throw and return True if made, False if missed."""
     return random.random() < OPP_FT_PERCENT
 # this is our helper to simulate free throws, which we will use in both strategies
+
+# STRATEGY A: Take a 3-pointer
+
+def simulate_three_point_strategy():
+    """
+    Simulate one game trial using the 3-point strategy.
+    Returns a tuple: (won: bool, points_scored: int)
+    """
+    score_diff = -3     # We start down 3
+    time_left  = STARTING_TIME
+    points_scored = 0   # Track our points
+ 
+    # --- Step 1: Attempt a 3-pointer ---
+    time_left -= TIME_3PT_ATTEMPT
+    if random.random() < MY_3PT_PERCENT:
+        score_diff += 3     # Tie game!
+        points_scored += 3
+        # Game goes to overtime
+        won = random.random() < OT_WIN_PERCENT
+        return (won, points_scored)
+    else:
+        # Missed the 3. Do we get an offensive rebound?
+        if random.random() < OFFREB_PERCENT and time_left > TIME_2PT_ATTEMPT:
+            # Got the rebound — try a quick 2-pointer
+            time_left -= TIME_2PT_ATTEMPT
+            if random.random() < MY_2PT_PERCENT:
+                score_diff += 2   # Still down 1, game continues but time likely out
+                points_scored += 2
+            # Either way, almost certainly time has run out. We lose unless we tied.
+        # If we missed everything, we lose
+        won = score_diff >= 0  # Only wins if somehow tied (extremely rare path)
+        return (won, points_scored)
+ 
