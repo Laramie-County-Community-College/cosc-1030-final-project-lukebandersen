@@ -153,8 +153,8 @@ def simulate_two_point_strategy():
                     return (True, points_scored)
         return (False, points_scored)
     
-# RUN THE SIMULATION
 # =============================================================================
+# RUN THE SIMULATION
 def run_simulation(num_trials):
     """
     Runs both strategies over many trials.
@@ -182,3 +182,46 @@ def run_simulation(num_trials):
         results["two_pt"]["total_points"] += points_2pt
  
     return results
+# =============================================================================
+# OUTPUT RESULTS
+def display_results(results, num_trials):
+    three_wins = results["three_pt"]["wins"]
+    two_wins   = results["two_pt"]["wins"]
+ 
+    three_pct  = (three_wins / num_trials) * 100
+    two_pct    = (two_wins   / num_trials) * 100
+ 
+    three_avg_pts = results["three_pt"]["total_points"] / num_trials
+    two_avg_pts   = results["two_pt"]["total_points"] / num_trials
+ 
+    print("=" * 55)
+    print("   BASKETBALL END-GAME SIMULATION RESULTS")
+    print("=" * 55)
+    print(f"  Trials run         : {num_trials:,}")
+    print(f"  Time remaining     : {STARTING_TIME} seconds")
+    print(f"  Your 3PT%          : {MY_3PT_PERCENT*100:.0f}%")
+    print(f"  Your 2PT%          : {MY_2PT_PERCENT*100:.0f}%")
+    print(f"  Opponent FT%       : {OPP_FT_PERCENT*100:.0f}%")
+    print(f"  Offensive Reb%     : {OFFREB_PERCENT*100:.0f}%")
+    print(f"  OT Win%            : {OT_WIN_PERCENT*100:.0f}%")
+    print("-" * 55)
+    print(f"  STRATEGY A (Take the 3):")
+    print(f"    Wins             : {three_wins:,}  ({three_pct:.1f}%)")
+    print(f"    Avg points scored: {three_avg_pts:.2f}")
+    print()
+    print(f"  STRATEGY B (2 + Foul):")
+    print(f"    Wins             : {two_wins:,}  ({two_pct:.1f}%)")
+    print(f"    Avg points scored: {two_avg_pts:.2f}")
+    print("-" * 55)
+ 
+    if three_pct > two_pct:
+        better = "STRATEGY A — Take the 3-pointer!"
+    elif two_pct > three_pct:
+        better = "STRATEGY B — Take the 2 and foul!"
+    else:
+        better = "Both strategies are statistically equal."
+ 
+    print(f"  Recommendation     : {better}")
+    print("=" * 55)
+ 
+ 
