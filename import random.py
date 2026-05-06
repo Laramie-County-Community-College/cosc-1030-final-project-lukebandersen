@@ -224,4 +224,9 @@ def display_results(results, num_trials):
     print(f"  Recommendation     : {better}")
     print("=" * 55)
  
+ # added if this needs to be imported as a module without running the simulation immediately
+if __name__ == "__main__":
+    print(f"\nRunning {NUM_TRIALS:,} trials for each strategy...\n")
+    results = run_simulation(NUM_TRIALS)
+    display_results(results, NUM_TRIALS)
  
